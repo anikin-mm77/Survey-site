@@ -22,3 +22,7 @@
  - создание коллекций опросов
  - обсуждения опросов
  - лента рекомендаций (на основе интересов и предыдущих опросов)
+
+**Сслыка на проект в Figmа**
+
+https://www.figma.com/design/jXrUJB791TXQ6JxsXDVMbH/Survey-site?node-id=0-1&t=KnE9LY2hSYjFBSTz-1
