@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserPostState, toggleLike, toggleSave } from "../api";
-import { useRequireAuth } from "../auth/useRequireAuth";
+import { useRequireAuth } from "../auth/UseRequireAuth";
 import likeIcon from "../icons/like.png";
 import messageIcon from "../icons/message.png";
 import savedIcon from "../icons/saved.png";

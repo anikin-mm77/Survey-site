@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getPollAnswers, savePollAnswer, getPollStats } from "../api";
-import { useRequireAuth } from "../auth/useRequireAuth";
+import { useRequireAuth } from "../auth/UseRequireAuth";
 import previousIcon from "../icons/previous.png";
 import nextIcon from "../icons/next.png";
 
