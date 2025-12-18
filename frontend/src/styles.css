@@ -1,0 +1,1022 @@
+/* =========================================
+   Vars
+========================================= */
+:root {
+  --bg: #f5f6f8;
+  --panel: #fff;
+  --line: #e5e7eb;
+  --muted: #6b7280;
+  --chip: #e9f4fb;
+
+  --sidebar-width: 260px; /* sidebar width */
+  --card-width: 720px; /* target outer width for card AND search */
+  --radius: 12px;
+  --page-pad: 16px; /* same horizontal padding for header and content */
+}
+
+/* =========================================
+   Base
+========================================= */
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #111;
+  font:
+    15px/1.45 -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Arial;
+}
+/* Ensure all form elements inherit the font */
+input,
+textarea,
+button,
+select {
+  font-family: inherit;
+}
+a {
+  color: inherit;
+}
+
+/* =========================================
+   Header (search centered right above content column)
+========================================= */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 16px;
+  padding: 10px var(--page-pad);
+  background: #f3f4f6;
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  grid-column: 1;
+  justify-self: start;
+  font-weight: 600;
+  color: #666;
+}
+/* Search wrapper - uses flex like in content for consistent alignment */
+.headerSearchWrapper {
+  grid-column: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* same as .content > :nth-child(2) */
+}
+.search {
+  width: 100%;
+  max-width: var(--card-width); /* same width as cards */
+  height: 36px;
+  padding: 0 16px; /* matches card padding for alignment */
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #e6f2f9;
+  outline: none;
+  box-sizing: border-box; /* includes border and padding in width */
+  text-align: center;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+.search::placeholder {
+  color: #5a7a8f;
+  font-weight: 500;
+}
+.search:focus {
+  border-color: #7ec0e6;
+  background: #fff;
+}
+.search:focus::placeholder {
+  opacity: 0;
+}
+.btn {
+  position: absolute;
+  right: var(--page-pad);
+  top: 50%;
+  transform: translateY(-50%);
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 18px;
+  background: #cfe7f5;
+  cursor: pointer;
+}
+.header > span {
+  position: absolute;
+  right: calc(var(--page-pad) + 100px); /* to the right of the button */
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 8px;
+  display: none !important; /* hide greeting */
+}
+
+/* =========================================
+   Layout: sidebar + main
+   IMPORTANT: .content has the same grid and padding as .header.
+========================================= */
+.content {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  column-gap: 16px;
+  padding: 0 var(--page-pad);
+}
+
+/* Left menu stuck to window edge */
+.sidebar {
+  position: sticky;
+  top: 56px;
+  align-self: start;
+  height: calc(100vh - 56px);
+  padding: 18px 0 24px 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+}
+
+/* Main column: ALL child blocks are centered
+   (cards, profile, post page) */
+.content > :nth-child(2) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center horizontally */
+}
+
+/* Any "large" section inside main is limited by outer width */
+.content > :nth-child(2) > *,
+.feed > *,
+.post {
+  width: 100%;
+  max-width: var(--card-width); /* key: matches search width */
+}
+
+/* Feed container for card alignment */
+.feed {
+  width: 100%;
+  max-width: var(--card-width);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* =========================================
+   Sidebar (without Popular)
+========================================= */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 0 18px;
+}
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #111;
+  font-size: 16px;
+}
+.menuItem:hover {
+  background: #f1f1f1;
+}
+.menuIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.popular {
+  display: flex;
+  flex-direction: column;
+}
+.popularTitle {
+  display: none !important;
+} /* hide only Popular title, keep Topics */
+
+/* Topics */
+.topicsTitle {
+  margin: 8px 0 6px;
+  padding: 0 18px;
+  font-weight: 700;
+  color: #444;
+  font-size: 15px;
+}
+.topics {
+  list-style: none;
+  margin: 0;
+  padding: 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.topics a {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #111;
+}
+.topics a:hover {
+  background: #f1f1f1;
+}
+.topicBtn {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #111;
+  font-size: 15px;
+}
+.topicBtn:hover {
+  background: #f1f1f1;
+}
+.topicBtn.active {
+  background: #e6f2f9;
+  font-weight: 600;
+}
+
+/* =========================================
+   Post card (feed / post page / profile wrapper)
+========================================= */
+.post {
+  margin: 0 0 20px 0; /* increased spacing between cards */
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 24px; /* increased padding inside card */
+  width: 100%;
+  max-width: var(--card-width); /* exact width as search */
+  box-sizing: border-box;
+  position: relative; /* for positioning Back button */
+}
+
+/* Back button - small and neat near the left corner of the card */
+.backBtn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--chip);
+  border: none;
+  border-radius: 8px;
+  height: 24px;
+  padding: 0 8px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #555;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.backBtn:hover {
+  background: #d7ecfb;
+}
+.backIcon {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+}
+
+/* First card in feed should be right under search */
+.feed > .post:first-child {
+  margin-top: 20px; /* small top margin for visual separation */
+}
+.postMeta {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+/* If post has a Back button, add top margin for postMeta */
+.post:has(.backBtn) .postMeta {
+  margin-top: 32px; /* margin for Back button */
+}
+.dot {
+  color: #bbb;
+}
+.postTitle {
+  margin: 0 0 16px 0;
+  font-size: 19px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: calc(1.4em * 2);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.postBody {
+  background: #e9e9ea;
+  border-radius: 16px;
+  padding: 24px;
+  min-height: 240px;
+  position: relative;
+}
+
+/* =========================================
+   Poll
+========================================= */
+.pollHeader {
+  color: #333;
+  font-weight: 400;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+}
+.pollQuestion {
+  margin-bottom: 16px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.options {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 50px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.option {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #111;
+}
+.option:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+.option.chosen {
+  background: rgba(0, 0, 0, 0.06);
+}
+.option.disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.95;
+}
+.optionEdit {
+  cursor: default;
+  padding: 6px 10px;
+}
+.optionEdit:hover {
+  background: transparent;
+}
+.bullet {
+  width: 18px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   Form Inputs (Create Survey)
+========================================= */
+.inputRound {
+  width: 100%;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+  margin-top: 6px;
+  display: block;
+}
+.inputRound:focus {
+  border-color: #7ec0e6;
+  background: #f8f9fa;
+}
+.inputUnderline {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+  flex: 1;
+  transition: all 0.2s;
+}
+.inputUnderline:focus {
+  border-color: #7ec0e6;
+  background: #f8f9fa;
+}
+.inputUnderline::placeholder {
+  color: #999;
+}
+
+/* Improved styles for survey creation form */
+.postBody .pollHeader button.pill {
+  float: none;
+  margin-left: auto;
+}
+.pollNav {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 10px;
+}
+.circleBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  color: #555;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 0;
+}
+.circleBtn:hover:not(:disabled) {
+  background: #f0f0f0;
+  border-color: #999;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+.circleBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.navIcon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 12px 28px;
+}
+.statBar {
+  flex: 1;
+  height: 9px;
+  background: #e8f3fb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.statFill {
+  height: 100%;
+  background: #7ec0e6;
+}
+.statPct {
+  min-width: 45px;
+  text-align: right;
+  font-size: 13px;
+  color: #555;
+}
+.pollDone {
+  padding: 18px;
+  border-radius: 12px;
+  background: #f4f7f9;
+  margin-bottom: 40px;
+}
+.pollCompleted {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 280px;
+  padding: 50px 20px 12px;
+}
+.pollCompletedMessage {
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pollCompletedTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+.pollCompletedText {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+}
+.viewAnswersBtn {
+  padding: 0 24px;
+  height: 40px;
+  font-size: 15px;
+}
+
+/* =========================================
+   Reactions
+========================================= */
+.reactions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+.pill {
+  background: var(--chip);
+  border: none;
+  border-radius: 16px;
+  height: 32px;
+  padding: 0 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pill:hover {
+  background: #d7ecfb;
+}
+.pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pill:disabled:hover {
+  background: var(--chip);
+}
+.pill.active {
+  background: #bde2f0;
+  font-weight: 600;
+}
+.pill.copied {
+  background: #cfe9d2;
+  color: #1e5b2a;
+  font-weight: 600;
+}
+.reactionIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  transition: all 0.2s;
+}
+.pill.active .reactionIcon {
+  filter: brightness(0.7) saturate(1.3);
+}
+.spacer {
+  flex: 1;
+}
+
+/* =========================================
+   Comments
+========================================= */
+.commentsWrap {
+  margin-top: 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+}
+.comments {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 280px;
+  overflow: auto;
+}
+.comment {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+.comment:last-child {
+  border-bottom: none;
+}
+.commentAuthor {
+  font-weight: 600;
+  font-size: 14px;
+}
+.commentText {
+  margin-top: 4px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+.commentForm {
+  margin-top: 14px;
+}
+.commentFormRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.commentForm textarea {
+  flex: 1;
+  resize: none;
+  border: 1px solid #d0d7de;
+  border-radius: 20px;
+  padding: 10px 16px;
+  min-height: 40px;
+  max-height: 120px;
+  font-size: 14px;
+  line-height: 1.5;
+  background: #f6f8fa;
+  transition: all 0.2s;
+  overflow-y: auto;
+}
+.commentForm textarea:focus {
+  outline: none;
+  border-color: #7ec0e6;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(126, 192, 230, 0.1);
+}
+.commentForm textarea::placeholder {
+  color: #6e7781;
+}
+.commentSendBtn {
+  height: 40px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 20px;
+  background: #6eb3e0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.commentSendBtn:hover {
+  background: #5a9fd1;
+  box-shadow: 0 2px 8px rgba(110, 179, 224, 0.3);
+}
+.commentSendBtn:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
+   Profile + PagedList (inside .post, so they don't "break" width)
+========================================= */
+.activityBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0 10px;
+}
+.activityTitle {
+  font-weight: 700;
+  color: #444;
+  font-size: 16px;
+}
+.profileSearch {
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: #f4f6f8;
+  min-width: 260px;
+  outline: none;
+}
+
+.profileGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: auto;
+  gap: 16px;
+  align-items: start;
+  width: 100%;
+  min-width: 0; /* allows grid to shrink */
+}
+.profileGrid > * {
+  min-width: 0; /* allows grid cells to shrink */
+  width: 100%; /* take all available width */
+  box-sizing: border-box;
+}
+.profileGrid .gridCreated {
+  grid-column: 1;
+  grid-row: 1;
+}
+.profileGrid .gridFav {
+  grid-column: 1;
+  grid-row: 2;
+}
+.profileGrid .gridPassed {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+.listBlock {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  min-width: 0; /* allows block to shrink */
+  box-sizing: border-box;
+  overflow: hidden; /* prevents overflow outside borders */
+}
+.listBlock.paged {
+  display: flex;
+  flex-direction: column;
+}
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.listTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+}
+.listTitle {
+  margin: 0;
+  padding: 0;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 24px;
+  color: #444;
+}
+.inlineAction {
+  display: inline-flex;
+  align-items: center;
+}
+.btnTiny {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #e9f4fb;
+  color: #222;
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 24px;
+  cursor: pointer;
+}
+.btnTiny:hover {
+  background: #d7ecfb;
+}
+.listMeta {
+  font-size: 12px;
+  color: #666;
+}
+.listScroll {
+  height: calc(var(--rows, 5) * var(--row-h, 28px));
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+}
+.listUl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.listUl li {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: var(--row-h, 28px);
+}
+.listLink {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  color: #0a66c2;
+  text-decoration: none;
+}
+.listLink:hover {
+  text-decoration: underline;
+}
+.listLinkText {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileTop {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.profilePhoto {
+  width: 220px;
+  height: 140px;
+  background: #e9ecef;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+}
+.profileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chipLine {
+  display: inline-block;
+  background: #e9f4fb;
+  border-radius: 14px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+.profileActions {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+/* =========================================
+   Auth Modal
+========================================= */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.authModal {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding: 60px 40px 40px;
+  width: 90%;
+  max-width: 400px;
+  min-height: 420px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.authTitle {
+  margin: 0 0 30px 0;
+  font-size: 32px;
+  font-weight: 400;
+  color: #999;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.modalClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #999;
+  background: #fff;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.modalClose:hover {
+  border-color: #555;
+  color: #333;
+  background: #f5f5f5;
+}
+
+.authModal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.authModal .inputRound {
+  height: 44px;
+  border-radius: 22px;
+  border: none;
+  padding: 0 18px;
+  font-size: 15px;
+  background: #e8e8e8;
+  color: #333;
+  margin-top: 0;
+}
+
+.authModal .inputRound::placeholder {
+  color: #999;
+}
+
+.authModal .inputRound:focus {
+  outline: none;
+  background: #ddd;
+}
+
+.authError {
+  padding: 10px 16px;
+  background: #ffe6e6;
+  border-radius: 12px;
+  color: #d00;
+  font-size: 14px;
+  text-align: center;
+}
+
+.authModal .btnPill {
+  height: 44px;
+  border: none;
+  border-radius: 22px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 6px;
+}
+
+.authModal .btnPill.primary {
+  background: #6eb3e0;
+  color: #fff;
+}
+
+.authModal .btnPill.primary:hover:not(:disabled) {
+  background: #5a9fd1;
+}
+
+.authModal .btnPill.primary:disabled {
+  background: #b0b0b0;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.authModal .btnPill.secondary {
+  background: #6eb3e0;
+  color: #fff;
+}
+
+.authModal .btnPill.secondary:hover {
+  background: #5a9fd1;
+}
+
+/* =========================================
+   Helpers
+========================================= */
+.hide {
+  display: none !important;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
