@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProfile } from "../api";
-import { useRequireAuth } from "../auth/useRequireAuth";
+import { useRequireAuth } from "../auth/UseRequireAuth";
 import PagedList from "../components/PagedList.jsx";
 
 export default function ProfilePage() {
